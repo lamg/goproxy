@@ -107,7 +107,8 @@ func (proxy *ProxyHttpServer) handleHttps(w http.ResponseWriter, r *http.Request
 		if targetOK && clientOK {
 			go copyAndClose(ctx, targetTCP, proxyClientTCP)
 			go copyAndClose(ctx, proxyClientTCP, targetTCP)
-		} else if targetSiteCon != nil && proxyClient != nil {
+		} else if targetSiteCon != nil && proxyClient != nil &&
+			ctx != nil {
 			go func() {
 				var wg sync.WaitGroup
 				wg.Add(2)
