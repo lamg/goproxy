@@ -108,16 +108,16 @@ func (proxy *ProxyHttpServer) handleHttps(w http.ResponseWriter, r *http.Request
 			go copyAndClose(ctx, targetTCP, proxyClientTCP)
 			go copyAndClose(ctx, proxyClientTCP, targetTCP)
 		} else {
-			go func() {
-				var wg sync.WaitGroup
-				wg.Add(2)
-				go copyOrWarn(ctx, targetSiteCon, proxyClient, &wg)
-				go copyOrWarn(ctx, proxyClient, targetSiteCon, &wg)
-				wg.Wait()
-				proxyClient.Close()
-				targetSiteCon.Close()
+			//go func() {
+			//	var wg sync.WaitGroup
+			//	wg.Add(2)
+			//	go copyOrWarn(ctx, targetSiteCon, proxyClient, &wg)
+			//	go copyOrWarn(ctx, proxyClient, targetSiteCon, &wg)
+			//	wg.Wait()
+			//	proxyClient.Close()
+			//	targetSiteCon.Close()
 
-			}()
+			//}()
 		}
 
 	case ConnectHijack:
