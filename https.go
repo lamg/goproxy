@@ -108,16 +108,15 @@ func (proxy *ProxyHttpServer) handleHttps(w http.ResponseWriter, r *http.Request
 			go copyAndClose(ctx, targetTCP, proxyClientTCP)
 			go copyAndClose(ctx, proxyClientTCP, targetTCP)
 		} else {
-			//go func() {
-			//	var wg sync.WaitGroup
-			//	wg.Add(2)
-			//	go copyOrWarn(ctx, targetSiteCon, proxyClient, &wg)
-			//	go copyOrWarn(ctx, proxyClient, targetSiteCon, &wg)
-			//	wg.Wait()
-			//	proxyClient.Close()
-			//	targetSiteCon.Close()
-
-			//}()
+			go func() {
+				var wg sync.WaitGroup
+				wg.Add(2)
+				go copyOrWarn(ctx, targetSiteCon, proxyClient, &wg)
+				go copyOrWarn(ctx, proxyClient, targetSiteCon, &wg)
+				wg.Wait()
+				proxyClient.Close()
+				targetSiteCon.Close()
+			}()
 		}
 
 	case ConnectHijack:
@@ -288,7 +287,7 @@ func httpError(w io.WriteCloser, ctx *ProxyCtx, err error) {
 
 func copyOrWarn(ctx *ProxyCtx, dst io.Writer, src io.Reader, wg *sync.WaitGroup) {
 	if _, err := io.Copy(dst, src); err != nil {
-		ctx.Warnf("Error copying to client: %s", err)
+		//ctx.Warnf("Error copying to client: %s", err)
 	}
 	wg.Done()
 }
