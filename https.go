@@ -286,8 +286,10 @@ func httpError(w io.WriteCloser, ctx *ProxyCtx, err error) {
 }
 
 func copyOrWarn(ctx *ProxyCtx, dst io.Writer, src io.Reader, wg *sync.WaitGroup) {
-	if _, err := io.Copy(dst, src); err != nil {
-		//ctx.Warnf("Error copying to client: %s", err)
+	if dst != nil && src != nil && ctx != nil {
+		if _, err := io.Copy(dst, src); err != nil {
+			ctx.Warnf("Error copying to client: %s", err)
+		}
 	}
 	wg.Done()
 }
